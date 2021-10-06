@@ -9,6 +9,10 @@ class QuadTree:
         self.y = y
         self.w = w
         self.h = h
+        self.nw = None
+        self.ne = None
+        self.sw = None
+        self.se = None
 
         self.tree_list = tree_list
 
@@ -40,17 +44,27 @@ class QuadTree:
         else:
             return
     
-    def query(self, query_tree_list, x, y, w, h):
-        checked_list = []
+    def query(self, root, x, y, w, h, check_list, child):
         point_list = []
 
-        for i in query_tree_list:
-            if i.x + i.w > x and i.x < x + w and i.y + i.h > y and i.y < y + h:
-                checked_list.append(i)
+        if root.x + root.w > x and root.x < x + w and root.y + root.h > y and root.y < y + h:
+            check_list.append(self)
+        else:
+            return
+
+        if self.ne != None:
+            self.ne.query(self.ne, x, y, w, h, check_list, True)
+        if self.nw != None:
+            self.nw.query(self.nw, x, y, w, h, check_list, True)
+        if self.se != None:
+            self.se.query(self.se, x, y, w, h, check_list, True)
+        if self.sw != None:
+            self.sw.query(self.sw, x, y, w, h, check_list, True)
+
+        if not child:
+            for i in check_list:
+                for j in i.points:
+                    if j.x > x and j.x < x + w and j.y > y and j.y < y + h:
+                        point_list.append(j)
         
-        for i in checked_list:
-            for j in i.points:
-                if j.x > x and j.x < x + w and j.y > y and j.y < y + h:
-                    point_list.append(j)
-        
-        return point_list, checked_list
+            return point_list

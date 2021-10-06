@@ -49,10 +49,11 @@ def main():
 
         #Check for collisions when checking
         if checking:
-            colliding_points, colliding_quads = quadtree.query(rect_list, mouse_pos[0]-50, mouse_pos[1]-50, 100, 100)
+            check_list = []
+            colliding_points = quadtree.query(quadtree, mouse_pos[0]-50, mouse_pos[1]-50, 100, 100, check_list, False)
             for i in colliding_points:
                 pygame.draw.circle(screen, (0,255,0), (i.x, i.y), 5)
-            for i in colliding_quads:
+            for i in check_list:
                 pygame.draw.rect(screen,(0,255,0), pygame.rect.Rect(i.x,i.y,i.w,1))
                 pygame.draw.rect(screen,(0,255,0), pygame.rect.Rect(i.x,i.y,1,i.h))
                 pygame.draw.rect(screen,(0,255,0), pygame.rect.Rect(i.x+i.w-1,i.y,1,i.h))
